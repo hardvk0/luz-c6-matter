@@ -1,0 +1,11 @@
+{
+  "name": "Luz C6 (Matter sobre Thread)",
+  "version": "__VERSION__",
+  "new_install_prompt_erase": true,
+  "builds": [
+    {
+      "chipFamily": "ESP32-C6",
+      "parts": [{ "path": "luz-c6-factory.bin", "offset": 0 }]
+    }
+  ]
+}

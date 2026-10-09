@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Luz C6 · instalar firmware</title>
+<script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
+<style>
+:root{--bg:#f3f5f8;--card:#fff;--ink:#1c2330;--mute:#5d6878;--line:#d9dee6;--acc:#e0a21b;--acc-ink:#1c1500}
+@media(prefers-color-scheme:dark){:root{--bg:#12151b;--card:#1a1f27;--ink:#e8ebf0;--mute:#98a2b3;--line:#2b323d;--acc:#f0b93d}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:24px 16px 56px}
+main{max-width:620px;margin:0 auto}
+h1{font-size:1.5rem;margin:8px 0 4px}
+h2{font-size:1.05rem;margin:28px 0 6px}
+p,li{max-width:70ch}.mute{color:var(--mute)}
+section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-top:16px}
+code{font-family:ui-monospace,Menlo,monospace;background:var(--bg);padding:1px 6px;border-radius:5px;word-break:break-all}
+esp-web-install-button button{font:inherit;font-weight:650;cursor:pointer;border:0;border-radius:10px;padding:12px 20px;background:var(--acc);color:var(--acc-ink)}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+</style></head><body><main>
+<h1>Luz C6</h1>
+<p class="mute">Relé como luz Matter sobre Thread para ESP32-C6, con MQTT opcional. Versión <span id="v">…</span>.</p>
+
+<section>
+<h2 style="margin-top:0">Instalar desde el navegador</h2>
+<p>Conecta la placa por USB (Chrome o Edge de escritorio) y pulsa el botón. Si ya está en uso, el instalador te ofrece borrar o conservar los datos.</p>
+<esp-web-install-button manifest="manifest.json">
+  <span slot="unsupported">Este navegador no admite Web Serial. Usa Chrome o Edge en un ordenador.</span>
+  <span slot="not-allowed">Esta página necesita HTTPS para acceder al puerto USB.</span>
+</esp-web-install-button>
+</section>
+
+<section>
+<h2 style="margin-top:0">Después de instalar</h2>
+<ol>
+<li>Conéctate al Wi-Fi <code>Luz-C6-xxxxxx</code> (contraseña inicial <code>luzconfig</code>); se abre solo el portal de configuración.</li>
+<li>Rellena MQTT si lo quieres y pulsa <strong>Guardar y reiniciar</strong>.</li>
+<li>En tu app de Matter, añade un dispositivo con el código que muestra el portal (emparejamiento por Bluetooth).</li>
+</ol>
+</section>
+
+<section>
+<h2 style="margin-top:0">Actualizaciones OTA</h2>
+<ul>
+<li>Matter: sirve <a href="luz_c6-ota.bin"><code>luz_c6-ota.bin</code></a> desde un proveedor OTA de Matter.</li>
+<li>MQTT o portal: usa <a href="luz_c6.bin"><code>luz_c6.bin</code></a> (publícalo en <code>&lt;base&gt;/ota/set</code> como URL, o súbelo desde el portal).</li>
+</ul>
+</section>
+<script>fetch('version.json').then(r=>r.json()).then(j=>document.getElementById('v').textContent=j.version).catch(()=>{})</script>
+</main></body></html>

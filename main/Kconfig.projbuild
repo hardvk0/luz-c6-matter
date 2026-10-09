@@ -1,0 +1,35 @@
+menu "Luz C6"
+
+    config LUZ_RELAY_GPIO
+        int "GPIO del relé"
+        default 19
+
+    config LUZ_RELAY_ACTIVE_HIGH
+        bool "El relé se activa con nivel alto"
+        default y
+
+    config LUZ_BUTTON_GPIO
+        int "GPIO del botón (activo en bajo, con pull-up interno)"
+        default 9
+
+    config LUZ_LED_GPIO
+        int "GPIO del LED de estado"
+        default 2
+
+    config LUZ_LED_ACTIVE_HIGH
+        bool "El LED se enciende con nivel alto"
+        default y
+
+    config LUZ_NO_NET_TIMEOUT_MIN
+        int "Minutos sin red Thread antes de abrir el portal"
+        default 15
+
+    config LUZ_PORTAL_IDLE_MIN
+        int "Minutos de inactividad del portal antes de volver al modo Matter"
+        default 10
+
+    config LUZ_AP_SSID_PREFIX
+        string "Prefijo del SSID del portal"
+        default "Luz-C6-"
+
+endmenu
