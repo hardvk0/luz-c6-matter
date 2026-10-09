@@ -17,35 +17,33 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
 
-      # La imagen de esp-matter ocupa muchos GB: sin esto el runner se queda sin disco al descargarla.
       - name: Liberar espacio en disco
         run: |
           df -h /
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/.ghcup \
                       /usr/local/share/boost /usr/share/swift /opt/hostedtoolcache/CodeQL
-          sudo docker image prune --all --force
           df -h /
 
-      # Docker Hub a veces no responde desde los runners: se reintenta con espera creciente.
-      - name: Descargar la imagen de esp-matter (con reintentos)
+      - name: Dependencias del sistema
         run: |
-          for i in 1 2 3 4 5; do
-            if docker pull espressif/esp-matter:release-v1.6; then exit 0; fi
-            echo "Intento $i fallido; reintentando en $((i*20)) s"
-            sleep $((i*20))
-          done
-          exit 1
+          sudo apt-get update
+          sudo apt-get install -y git wget curl unzip flex bison gperf pkg-config \
+            python3-pip python3-venv python3-dev cmake ninja-build ccache \
+            libffi-dev libssl-dev dfu-util libusb-1.0-0 libglib2.0-dev \
+            libgirepository1.0-dev libcairo2-dev
 
-      - name: Compilar dentro de la imagen oficial de esp-matter (ESP-IDF 5.5)
-        run: |
-          docker run --rm --entrypoint bash \
-            -v "$GITHUB_WORKSPACE":/project -w /project \
-            -e RUN_NUMBER="${{ github.run_number }}" \
-            -e HOST_UID="$(id -u)" -e HOST_GID="$(id -g)" \
-            espressif/esp-matter:release-v1.6 ci/build.sh
+      # Se instala desde GitHub (sin Docker Hub, que limita las descargas desde los runners).
+      - name: Instalar ESP-IDF 5.5.5 y esp-matter release/v1.6
+        run: bash ci/setup.sh
+
+      - name: Compilar firmware (ESP32-C6)
+        env:
+          RUN_NUMBER: ${{ github.run_number }}
+        run: bash ci/build.sh
 
       - uses: actions/upload-artifact@v4
         with:
