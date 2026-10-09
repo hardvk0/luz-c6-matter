@@ -29,6 +29,16 @@ jobs:
           sudo docker image prune --all --force
           df -h /
 
+      # Docker Hub a veces no responde desde los runners: se reintenta con espera creciente.
+      - name: Descargar la imagen de esp-matter (con reintentos)
+        run: |
+          for i in 1 2 3 4 5; do
+            if docker pull espressif/esp-matter:release-v1.6; then exit 0; fi
+            echo "Intento $i fallido; reintentando en $((i*20)) s"
+            sleep $((i*20))
+          done
+          exit 1
+
       - name: Compilar dentro de la imagen oficial de esp-matter (ESP-IDF 5.5)
         run: |
           docker run --rm --entrypoint bash \
