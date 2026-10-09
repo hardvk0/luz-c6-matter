@@ -19,6 +19,24 @@
 #include <platform/ESP32/OpenthreadLauncher.h>
 #endif
 
+#if CHIP_DEVICE_CONFIG_ENABLE_THREAD
+// Como en esp-matter/examples/light/main/app_priv.h: ESP-IDF no los define.
+#define ESP_OPENTHREAD_DEFAULT_RADIO_CONFIG()                                           \
+    {                                                                                   \
+        .radio_mode = RADIO_MODE_NATIVE,                                                \
+    }
+
+#define ESP_OPENTHREAD_DEFAULT_HOST_CONFIG()                                            \
+    {                                                                                   \
+        .host_connection_mode = HOST_CONNECTION_MODE_NONE,                              \
+    }
+
+#define ESP_OPENTHREAD_DEFAULT_PORT_CONFIG()                                            \
+    {                                                                                   \
+        .storage_partition_name = "nvs", .netif_queue_size = 10, .task_queue_size = 10, \
+    }
+#endif
+
 static const char *TAG = "matter";
 
 using namespace esp_matter;
@@ -73,8 +91,10 @@ static void event_cb(const ChipDeviceEvent *event, intptr_t)
             auto &mgr = chip::Server::GetInstance().GetCommissioningWindowManager();
             if (!mgr.IsCommissioningWindowOpen()) {
                 // Sigue en la red Thread: se anuncia solo por DNS-SD, como en el ejemplo oficial.
-                mgr.OpenBasicCommissioningWindow(chip::System::Clock::Seconds32(CHIP_DEVICE_CONFIG_DISCOVERY_TIMEOUT_SECS),
-                                                 chip::CommissioningWindowAdvertisement::kDnssdOnly);
+                CHIP_ERROR e = mgr.OpenBasicCommissioningWindow(
+                    chip::System::Clock::Seconds32(CHIP_DEVICE_CONFIG_DISCOVERY_TIMEOUT_SECS),
+                    chip::CommissioningWindowAdvertisement::kDnssdOnly);
+                if (e != CHIP_NO_ERROR) ESP_LOGW(TAG, "No se pudo reabrir la ventana de emparejamiento");
             }
         }
         break;
@@ -100,7 +120,9 @@ static void button_cb(btn_event_t evt)
         auto &srv = chip::Server::GetInstance();
         if (srv.GetFabricTable().FabricCount() == 0 && !srv.GetCommissioningWindowManager().IsCommissioningWindowOpen()) {
             ESP_LOGI(TAG, "Reabriendo ventana de emparejamiento");
-            srv.GetCommissioningWindowManager().OpenBasicCommissioningWindow();
+            if (srv.GetCommissioningWindowManager().OpenBasicCommissioningWindow() != CHIP_NO_ERROR) {
+                ESP_LOGW(TAG, "No se pudo abrir la ventana de emparejamiento");
+            }
         } else {
             ESP_LOGI(TAG, "Ya emparejado o ventana abierta: usa el controlador para compartir el dispositivo");
         }
