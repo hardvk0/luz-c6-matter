@@ -1,8 +1,8 @@
 # Name,   Type, SubType, Offset,   Size,     Flags
-# Flash de 4 MB: dos ranuras OTA de ~1,9 MB. fctry lo usa Matter (datos de fábrica/contadores).
-nvs,      data, nvs,     0x10000,  0xC000,
-otadata,  data, ota,     0x1C000,  0x2000,
-phy_init, data, phy,     0x1E000,  0x1000,
-ota_0,    app,  ota_0,   0x20000,  0x1EA000,
-ota_1,    app,  ota_1,   0x210000, 0x1EA000,
-fctry,    data, nvs,     0x3FA000, 0x6000
+# Flash de 4 MB: dos ranuras OTA de 0x1F0000 (1,94 MB). fctry lo usa Matter.
+nvs,      data, nvs,     0x9000,   0xC000,
+otadata,  data, ota,     0x15000,  0x2000,
+phy_init, data, phy,     0x17000,  0x1000,
+fctry,    data, nvs,     0x18000,  0x6000,
+ota_0,    app,  ota_0,   0x20000,  0x1F0000,
+ota_1,    app,  ota_1,   0x210000, 0x1F0000,

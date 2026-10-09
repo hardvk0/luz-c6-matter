@@ -106,7 +106,7 @@ Los pines, la polaridad del relé/LED y los tiempos están en `idf.py menuconfig
 
 ## Puntos a vigilar
 
-- **Tamaño:** Matter + Thread + BLE + Wi-Fi AP + servidor web + MQTT/TLS es mucho para una ranura OTA de 1,9 MB
+- **Tamaño:** Matter + Thread + BLE + Wi-Fi AP + servidor web + MQTT/TLS es mucho para una ranura OTA de 1,94 MB
   (4 MB de flash). Mi estimación es que queda justo; el workflow falla con un mensaje claro si no cabe y
   el log del paso de compilación muestra el desglose (`idf.py size`). Si no cabe, lo primero que se recorta es TLS (certificados de MQTT/OTA).
 - **MQTT sobre Thread:** el broker debe ser alcanzable por IPv6 o por NAT64 del Border Router
