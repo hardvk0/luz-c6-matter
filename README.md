@@ -63,8 +63,8 @@ Si además añades el dispositivo por Matter en Home Assistant, tendrás la luz 
 
 1. Crea un repositorio en GitHub y sube el contenido de esta carpeta (rama `main`).
 2. **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-3. La pestaña **Actions** compila sola (o ejecuta "Compilar y publicar firmware" a mano). Usa la imagen oficial
-   `espressif/esp-matter:release-v1.6` (se libera disco del runner antes de descargarla); tarda 10-20 minutos.
+3. La pestaña **Actions** compila sola (o ejecuta "Compilar y publicar firmware" a mano). Instala ESP-IDF 5.5.5 y esp-matter `release/v1.6` directamente desde GitHub
+   (sin Docker Hub); tarda unos 20-30 minutos.
 4. Al terminar, tu web de instalación está en `https://<usuario>.github.io/<repo>/`. Ábrela con Chrome o Edge,
    conecta la placa por USB y pulsa **Instalar** (Web Serial; la página necesita HTTPS, que Pages ya da).
 

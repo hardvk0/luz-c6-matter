@@ -1,19 +1,17 @@
 #!/usr/bin/env bash
-# Se ejecuta DENTRO de la imagen espressif/esp-matter:release-v1.6 con el repo montado en /project.
+# Compila el firmware. Requiere haber ejecutado antes ci/setup.sh.
 set -eo pipefail
 
-export IDF_PATH="${IDF_PATH:-/opt/espressif/esp-idf}"
-export ESP_MATTER_PATH="${ESP_MATTER_PATH:-/opt/espressif/esp-matter}"
+ESP_ROOT="${ESP_ROOT:-$HOME/esp}"
+export IDF_PATH="$ESP_ROOT/esp-idf"
+export ESP_MATTER_PATH="$ESP_ROOT/esp-matter"
 N="${RUN_NUMBER:-1}"
-
-# Los archivos creados como root dentro del contenedor deben quedar legibles/borrables por el runner.
-trap 'chown -R "${HOST_UID:-0}:${HOST_GID:-0}" /project || true' EXIT
-git config --global --add safe.directory '*'
 
 pushd "$IDF_PATH" >/dev/null && . ./export.sh && popd >/dev/null
 pushd "$ESP_MATTER_PATH" >/dev/null && . ./export.sh && popd >/dev/null
 
-cd /project
+cd "$(dirname "$0")/.."
+
 idf.py -DCLI_PROJECT_VER="1.0.${N}" -DCLI_PROJECT_VER_NUMBER="${N}" set-target esp32c6
 idf.py build
 idf.py size
